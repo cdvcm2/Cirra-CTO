@@ -78,3 +78,64 @@ Never do: Test OAuth inside embedded preview tools.
 Pattern promoted: no — covered by OAuth pattern notes
 
 ---RNINGS.md | Cirra Edge | Append-only — never delete entries*
+
+## 2026-03-23 — Role migration breaks isAdmin silently
+
+Project: lift-staff-portal | Stack: React + Supabase | Time lost: unknown
+
+Problem: After migrating role values from admin to superadmin, sidebar sections disappeared with no error thrown. App appeared to work but admin features were hidden.
+
+Root cause: AuthContext isAdmin check was hardcoded as role === 'admin'. After migration, role value became 'superadmin' — check silently returned false.
+
+Fix: isAdmin = role === 'admin' || role === 'superadmin'
+
+Never do: Migrate role enum values without auditing every role check in AuthContext first. Always grep for the old role string before running the migration.
+
+Pattern promoted: yes — [React + Supabase] Role Migration Safety
+
+---
+
+## 2026-03-23 — get_my_role() returns null in Supabase SQL editor
+
+Project: lift-staff-portal | Stack: Supabase PostgreSQL | Time lost: unknown
+
+Problem: get_my_role() returned null when tested in Supabase SQL editor. Caused confusion about whether the function was broken.
+
+Root cause: SQL editor runs as postgres superuser. auth.uid() returns null — not an authenticated user context. Function works correctly in app via real JWT.
+
+Fix: Never test auth.uid()-dependent functions in SQL editor. Test via app or Edge Function with real JWT.
+
+Never do: Assume get_my_role() is broken because it returns null in SQL editor. Expected behaviour — not a bug.
+
+Pattern promoted: no — covered as diagnostic note in RLS Role Check Function pattern
+
+
+## 2026-03-23 — Role migration breaks isAdmin silently
+
+Project: lift-staff-portal | Stack: React + Supabase | Time lost: unknown
+
+Problem: After migrating role values from admin to superadmin, sidebar sections disappeared with no error thrown. App appeared to work but admin features were hidden.
+
+Root cause: AuthContext isAdmin check was hardcoded as role === 'admin'. After migration, role value became 'superadmin' - check silently returned false.
+
+Fix: isAdmin = role === 'admin' || role === 'superadmin'
+
+Never do: Migrate role enum values without auditing every role check in AuthContext first. Always grep for the old role string before running the migration.
+
+Pattern promoted: yes - [React + Supabase] Role Migration Safety
+
+---
+
+## 2026-03-23 — get_my_role() returns null in Supabase SQL editor
+
+Project: lift-staff-portal | Stack: Supabase PostgreSQL | Time lost: unknown
+
+Problem: get_my_role() returned null when tested in Supabase SQL editor. Caused confusion about whether the function was broken.
+
+Root cause: SQL editor runs as postgres superuser. auth.uid() returns null - not an authenticated user context. Function works correctly in app via real JWT.
+
+Fix: Never test auth.uid()-dependent functions in SQL editor. Test via app or Edge Function with real JWT.
+
+Never do: Assume get_my_role() is broken because it returns null in SQL editor. Expected behaviour - not a bug.
+
+Pattern promoted: no - covered as diagnostic note in RLS Role Check Function pattern
