@@ -90,3 +90,32 @@ Solution: Two separate loading states.
 
 *PATTERNS.md | Cirra Edge | Last updated: March 2026*
 *Promote from LEARNINGS.md when a pattern solves the same problem in 2+ projects.*
+
+
+## [React + Supabase] Role Migration Safety
+
+**Stack:** React + Supabase Auth
+**Proven in:** lift-staff-portal (Mar 2026)
+**Time saved:** unknown — silent failure, could have cost hours in production
+
+**Problem:** After migrating role enum values (e.g. admin to superadmin), UI features disappear silently. No error thrown. App appears to work but role-gated sections are hidden.
+
+**Root cause:** AuthContext role checks hardcoded to old string value. Migration changes the value in DB but app still checks the old string - silently returns false.
+
+**Solution:** Before any role enum migration:
+
+1. Grep for every role check in the codebase:
+   grep -rn "role === " src/
+   grep -rn "isAdmin" src/
+
+2. Update every check to handle both old and new values during transition:
+   isAdmin = role === 'admin' || role === 'superadmin'
+
+3. After migration is stable and all users have new role - clean up to single value check.
+
+4. Always verify AuthContext role checks match current enum values in DB.
+
+**Failure modes:**
+- Migrating role values without grepping first - silent permission failures
+- Checking role in multiple places - missing one causes partial breakage
+- No error thrown - developer assumes feature is working when it is not
