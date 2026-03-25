@@ -119,3 +119,158 @@ Solution: Two separate loading states.
 - Migrating role values without grepping first - silent permission failures
 - Checking role in multiple places - missing one causes partial breakage
 - No error thrown - developer assumes feature is working when it is not
+
+## [Cloudflare Pages] Bun Lockfile Before First Deploy
+
+**Stack:** Cloudflare Pages + any Vite project
+**Proven in:** lift-staff-portal (Mar 2026)
+**Time saved:** 45 minutes
+
+**Problem:** First Cloudflare Pages deployment fails with bun install --frozen-lockfile error.
+
+**Root cause:** Cloudflare Pages auto-detects bun as package manager when no lockfile exists. Runs with --frozen-lockfile flag which requires a committed lockfile.
+
+**Solution:**
+```bash
+# Before first Cloudflare Pages deployment
+bun install
+git add bun.lock
+git commit -m "chore: add bun lockfile for Cloudflare Pages"
+git push
+```
+
+**Also note:** The .pages.dev subdomain is set permanently at project creation. Renaming the project later only changes the display name. Always confirm the project name before creating.
+
+**Failure modes:**
+- No bun.lock committed = deployment fails immediately on first push
+- Wrong project name at creation = subdomain cannot be changed
+
+---
+
+## [Any Stack] GitHub Multi-Account SSH
+
+**Stack:** Any — affects developers with multiple GitHub accounts
+**Proven in:** lift-staff-portal (Mar 2026)
+
+**Problem:** git push fails with permission denied or pushes to wrong account when multiple GitHub accounts are configured locally.
+
+**Root cause:** git@github.com always uses the default SSH key. When repos belong to different GitHub accounts, the wrong key is used.
+
+**Solution:**
+```bash
+# ~/.ssh/config
+Host github-lift
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_lift
+
+Host github-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_personal
+```
+```bash
+# Set remote to use named host not github.com
+git remote set-url origin git@github-lift:LIFT-Mobility/repo-name.git
+```
+
+**Failure modes:**
+- Using git@github.com when multiple accounts active = wrong key used = permission denied or wrong account push
+
+---
+
+## [React + shadcn] Split Panel Layout
+
+**Stack:** React + shadcn/ui
+**Proven in:** lift-staff-portal (Mar 2026)
+**Time saved:** 3 Cursor iterations
+
+**Problem:** shadcn Sheet used for side panel. Sheet renders over page content — table behind it becomes invisible and non-interactive.
+
+**Root cause:** Sheet is built on Radix Dialog. It is an overlay, not a layout component. It cannot coexist with visible background content.
+
+**Solution:**
+```tsx
+// For split-panel where background content must remain visible
+<div className="flex h-full">
+  <div className="flex-1 overflow-auto">
+    {/* Table or list */}
+  </div>
+  {panelOpen && (
+    <div className="w-[40vw] min-w-[480px] border-l overflow-auto">
+      {/* Detail panel */}
+    </div>
+  )}
+</div>
+
+// Never use Sheet for this pattern
+// Sheet = overlay (modal behaviour)
+// Fixed div = layout component (split behaviour)
+```
+
+**Failure modes:**
+- Sheet blocks interaction with background content
+- Sheet does not support URL-synced state naturally
+- Sheet animation fights with panel open/close transitions
+
+---
+
+## [Supabase] Edge Function Secrets — Never Use SUPABASE_ Prefix
+
+**Stack:** Supabase Edge Functions
+**Proven in:** lift-mobility-core (Mar 2026)
+**Time saved:** 30 minutes
+
+**Problem:** Custom secret named SUPABASE_SERVICE_ROLE_KEY rejected by Supabase secrets UI with no clear error message.
+
+**Root cause:** Supabase reserves the SUPABASE_ namespace internally. Any secret with this prefix is rejected.
+
+**Solution:**
+```bash
+# Never use SUPABASE_ prefix for custom secrets
+npx supabase secrets set SERVICE_ROLE_KEY=your-key   # correct
+npx supabase secrets set SUPABASE_SERVICE_ROLE_KEY=your-key  # rejected
+
+# In Edge Function
+const key = Deno.env.get('SERVICE_ROLE_KEY')  # correct
+```
+
+**Failure modes:**
+- Silent rejection or unclear error in Supabase dashboard
+- Function deploys successfully but secret is never set
+
+---
+
+## [Supabase] PostgREST Nested Joins Fail on RLS-Protected Tables
+
+**Stack:** Supabase PostgreSQL + PostgREST
+**Proven in:** lift-mobility-core (Mar 2026)
+**Time saved:** 45 minutes
+
+**Problem:** PostgREST nested join returns 500 error when the joined table has RLS policies using auth.uid().
+
+**Root cause:** auth.uid() context may not propagate correctly through PostgREST nested joins. RLS check fails silently, returning 500.
+
+**Solution:**
+```typescript
+// Never nested join on RLS-protected tables
+// Wrong
+const { data } = await supabase
+  .from('wave_occurrences')
+  .select('*, waves(*)')  // waves has RLS — will 500
+
+// Correct — fetch separately
+const { data: occurrences } = await supabase
+  .from('wave_occurrences')
+  .select('*')
+
+const { data: waves } = await supabase
+  .from('waves')
+  .select('*')
+  .in('id', occurrences.map(o => o.wave_id))
+```
+
+**Failure modes:**
+- 500 with no useful error message
+- Only fails when RLS is enabled — passes in dev if RLS not yet applied
+- Nested joins on non-RLS tables work fine — easy to miss pattern
