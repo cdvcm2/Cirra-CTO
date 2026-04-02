@@ -507,16 +507,39 @@ MEDIUM:
 CHAT HYGIENE RULES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Start a new chat every 40-50 exchanges.
-At session end, update MASTER_CONTEXT.md with any new 
-group-level decisions before closing the chat.
-Commit the update immediately — never carry it forward.
+CONTEXT LIMIT: Start a new chat every 40-50 exchanges.
+Do not wait to feel degradation — preempt it.
 
-After every 40 exchanges in any Group chat, Claude must 
-proactively warn: "This chat is approaching context limit. 
-Produce handover update before next session." and output 
-a clean diff of what changed in MASTER_CONTEXT.md 
-during this session.
+DEGRADATION CHECK: Paste this into any suspect chat:
+"What is the naming convention for customer-facing records 
+and what does Stanley's access look like?"
+If the answer is wrong or vague — chat is degraded, 
+start fresh immediately.
+
+MASTER_CONTEXT.md UPDATE TRIGGERS (same session, always):
+- Product pivot or scope change
+- New hard deadline confirmed
+- Architecture decision approved
+- Production gate conditions set or changed
+- New product added to portfolio
+- Score changes significantly
+- Critical open items resolved or added
+
+Does NOT update MASTER_CONTEXT.md:
+- Bug fixes, feature completions, sprint progress
+- Sub-CTO report processing
+(These go in per-project CLAUDE.md only)
+
+END OF SESSION CHECKLIST (any Group chat):
+1. Update MASTER_CONTEXT.md if any trigger above fired
+2. Append new entries to DECISIONS_LOG.md
+3. Commit both with descriptive message
+4. Push to main
+5. Then close the chat
+
+PROACTIVE WARNING: After every 40 exchanges Claude must 
+say: "Approaching context limit — run end of session 
+checklist before closing."
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CLEMENT'S WORKING STYLE
