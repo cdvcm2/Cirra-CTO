@@ -504,6 +504,21 @@ MEDIUM:
     Clement never confirmed this went through. Verify.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CHAT HYGIENE RULES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Start a new chat every 40-50 exchanges.
+At session end, update MASTER_CONTEXT.md with any new 
+group-level decisions before closing the chat.
+Commit the update immediately — never carry it forward.
+
+After every 40 exchanges in any Group chat, Claude must 
+proactively warn: "This chat is approaching context limit. 
+Produce handover update before next session." and output 
+a clean diff of what changed in MASTER_CONTEXT.md 
+during this session.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CLEMENT'S WORKING STYLE
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
