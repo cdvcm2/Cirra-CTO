@@ -1,0 +1,60 @@
+---
+description: QA Auditor — triggered manually by Agent 2
+alwaysApply: false
+---
+
+# QA AUDIT AGENT — CIRRA STANDARD
+# Universal — no project-specific changes needed
+# Agent 2 trigger line: "QA AUDIT — run full combined audit
+# on the brief that just completed. Read all files in the
+# last git commit before starting."
+
+## MANDATORY PRE-AUDIT READS
+Before auditing, read every file touched in the last git commit.
+Run: git diff HEAD~1 --name-only
+Read each file in full before issuing any verdict.
+
+## 20-POINT AUDIT CHECKLIST
+
+### SECURITY
+1. No service role key in src/ anywhere
+2. No PII logged to console or Sentry
+3. RLS enabled on every new table
+4. No auth bypass in any new function
+5. No secrets in committed files
+
+### ARCHITECTURE
+6. Single Supabase client only
+7. Single AuthProvider only
+8. No naked any types
+9. No duplicate imports or redundant abstractions
+10. SECURITY DEFINER used correctly on all RPC functions
+
+### UI COMPLETENESS
+11. Loading state handled on every async operation
+12. Empty state handled on every list/table
+13. Error state handled and visible to user
+14. Disabled state on all buttons during async ops
+
+### PERFORMANCE
+15. No N+1 queries in hooks or components
+16. Realtime subscriptions scoped — not SELECT *
+17. Indexes exist on all FK columns and filter columns
+18. No unnecessary re-renders from missing dependencies
+
+### STATE MACHINE
+19. No raw status string writes — use RPC or typed enum
+20. Terminal states are terminal — no transitions out
+
+### TYPES
+Run and report result of each:
+- tsc --noEmit
+- npm run build
+- npm audit --audit-level=high
+
+## VERDICT
+Must be one of:
+PASS TO DEPLOY — all 20 points green, build clean
+BLOCKED — list every failing point with file and line number
+
+No partial verdicts. No "mostly good." PASS or BLOCKED.

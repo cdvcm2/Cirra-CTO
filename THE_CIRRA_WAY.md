@@ -170,3 +170,37 @@ CLAUDE.md over 500 lines → extract to DB_SCHEMA_GUIDE
 | Hard problem solved | Flag LEARNINGS CANDIDATE: yes. Run capture ritual within 3-5 days. |
 
 *The Cirra Engineering Playbook | Version 2.0 | Cirra Edge | March 2026*
+
+
+═══════════════════════════════════════════════════
+PARALLEL AGENT PROTOCOL — CLEMENT'S RULE
+═══════════════════════════════════════════════════
+
+This is not optional. This is how Cirra builds.
+
+RULE 1 — TWO AGENTS ALWAYS
+Every brief. Every project. Every session.
+Agent 1 builds. Agent 2 audits. They run simultaneously.
+Never sequential. If you ran QA after the session ended
+you did it wrong.
+
+RULE 2 — CURSOR RULES ARE MANDATORY
+Every Cirra project must have .cursor/rules/ with:
+- session-opener.mdc (alwaysApply: true)
+- qa-agent.mdc (alwaysApply: false)
+Committed to repo. Not optional. Not later.
+
+RULE 3 — AGENT 2 TRIGGER IS ONE LINE
+"QA AUDIT — run full combined audit on the brief that just
+completed. Read all files in the last git commit."
+That is all. Cursor Rules does the rest.
+
+RULE 4 — PASS TO DEPLOY OR BLOCKED
+No merge without PASS TO DEPLOY verdict from Agent 2.
+No exceptions. Ever.
+
+RULE 5 — SESSION OPENER IS AUTOMATIC
+Agent 1 never needs to be told to read CLAUDE.md or
+HANDOVER.md or PATTERNS.md. session-opener.mdc does it.
+If you are pasting those instructions manually every
+session your rules file is not working.

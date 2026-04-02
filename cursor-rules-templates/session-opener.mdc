@@ -1,0 +1,36 @@
+---
+description: Session opener — fires on every Cursor task
+alwaysApply: true
+---
+
+# SESSION OPENER — CIRRA STANDARD
+# Copy this file to .cursor/rules/session-opener.mdc in every project
+# Fill all [PROJECT-SPECIFIC] sections before use
+
+## MANDATORY PRE-TASK READS
+Before doing anything else, read these files in full:
+- CLAUDE.md
+- HANDOVER.md
+- [PROJECT-SPECIFIC: e.g. ENGINEERING_DOCTRINE.md or THE_CIRRA_WAY.md]
+- [PROJECT-SPECIFIC: e.g. LIFT_SHARED.md or PATTERNS.md]
+
+## PROJECT IDENTITY
+Supabase project ref: [PROJECT-SPECIFIC: e.g. msiyudmaidguzjuemcru]
+Single Supabase client path: [PROJECT-SPECIFIC: e.g. src/lib/supabase.ts]
+AuthProvider path: [PROJECT-SPECIFIC: e.g. src/contexts/AuthContext.tsx]
+
+## ENFORCED RULES — NO EXCEPTIONS
+- One Supabase client only. Never instantiate a second.
+- One AuthProvider only. Never nest or duplicate.
+- No service role key in src/ ever.
+- No naked any types.
+- RLS is always on. Never bypass with service role in frontend.
+- Every brief must produce a SUMMARY block before closing.
+- Output format: SUMMARY / TASK / FILES CREATED / FILES MODIFIED /
+  FILES DELETED / CHECKS RUN / SCHEMA CHANGES / MIGRATION APPLIED /
+  COMMITTED / PUSHED / MERGE CONFLICTS / BUILD STATUS / OPEN ISSUES
+
+## AGENT PROTOCOL
+You are Agent 1 (Builder) unless explicitly told you are Agent 2.
+Agent 1: Read files. Build. Commit. Push. Post SUMMARY block.
+Agent 2: Starts immediately when Agent 1 posts SUMMARY block.

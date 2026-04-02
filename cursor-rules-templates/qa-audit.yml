@@ -1,0 +1,61 @@
+name: QA Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  qa-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npx tsc --noEmit
+
+      - name: Build check
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Npm audit
+        run: npm audit --audit-level=high
+
+      - name: No service role key in src
+        run: |
+          if grep -r "service_role" src/; then
+            echo "FAIL: service_role key found in src/"
+            exit 1
+          fi
+          echo "PASS: no service_role key in src/"
+
+      - name: No duplicate Supabase clients
+        run: |
+          COUNT=$(grep -r "createClient" src/ | wc -l)
+          if [ "$COUNT" -gt "1" ]; then
+            echo "FAIL: $COUNT Supabase client instantiations found"
+            exit 1
+          fi
+          echo "PASS: single Supabase client confirmed"
+
+      - name: No naked any types
+        run: |
+          if grep -rn ": any" src/ --include="*.ts" --include="*.tsx"; then
+            echo "FAIL: naked any types found"
+            exit 1
+          fi
+          echo "PASS: no naked any types"

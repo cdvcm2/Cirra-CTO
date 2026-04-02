@@ -274,3 +274,44 @@ const { data: waves } = await supabase
 - 500 with no useful error message
 - Only fails when RLS is enabled — passes in dev if RLS not yet applied
 - Nested joins on non-RLS tables work fine — easy to miss pattern
+
+---
+
+## [Any Stack] Parallel Agent Protocol
+
+Stack: Any (Cursor + any repo)
+Proven in: liftcore (April 2026)
+Time saved: QA catches bugs before deploy instead of after
+
+Pattern:
+Every brief runs exactly two Cursor agents simultaneously.
+Agent 1 (Builder): executes the brief. Reads files. Builds.
+Commits. Pushes. Posts SUMMARY block.
+Agent 2 (Auditor): triggered with one line the moment Agent 1
+posts SUMMARY. Cursor Rules expands it into full 20-point audit
+automatically.
+
+Setup:
+1. Create .cursor/rules/session-opener.mdc (alwaysApply: true)
+   Project-specific: supabase ref, shared doc paths,
+   single client path, AuthProvider path, output format.
+2. Create .cursor/rules/qa-agent.mdc (alwaysApply: false)
+   Universal: security, architecture, UI, performance,
+   state machine, types checks. Copy from cirra-cto template.
+3. Add .github/workflows/qa-audit.yml
+   Runs tsc, build, audit, security greps on every push.
+   Copy from cirra-cto template.
+
+Agent 2 trigger line (paste once, rules do the rest):
+"QA AUDIT — run full combined audit on the brief that just
+completed. Read all files in the last git commit."
+
+Failure modes:
+- qa-agent.mdc created as 0 bytes if heredoc not closed
+  properly. Verify with: wc -c .cursor/rules/qa-agent.mdc
+- alwaysApply: true on qa-agent causes it to run on every
+  task not just audits. Keep it false, trigger manually.
+- session-opener.mdc must be project-specific. Do not copy
+  liftcore version without updating supabase ref and doc paths.
+
+Verdict options: PASS TO DEPLOY or BLOCKED. Nothing else.

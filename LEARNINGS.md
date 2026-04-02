@@ -233,3 +233,27 @@ Fix: Rotate the exposed token immediately. Never ask user to paste full terminal
 Never do: Ask user to paste terminal output that may contain secrets. Always be specific about what to copy.
 
 Pattern promoted: no — operational discipline
+
+---
+
+## 2026-04-02 — Parallel agent protocol not used until late
+
+Project: liftcore | Time lost: full session running QA
+sequentially instead of in parallel
+
+Problem: QA ran after each brief completed, not during the
+next brief. Every session had a sequential build→wait→QA→fix
+cycle instead of build+QA running simultaneously.
+
+Root cause: Two-agent pattern was never established as the
+default. Discovered mid-session and only adopted from
+Brief 096 onwards.
+
+Fix: Cursor Rules files (.mdc) in .cursor/rules/ handle
+the session opener and QA audit automatically. Two agents
+run in parallel from the first brief of every session.
+
+Never do: Start a session without both agent windows open.
+Agent 2 starts the moment Agent 1 posts its SUMMARY block.
+
+Pattern promoted: yes — [Any Stack] Parallel Agent Protocol
