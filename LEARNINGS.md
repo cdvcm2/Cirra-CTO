@@ -4,6 +4,21 @@ Append-only. Most recent first. Never delete entries.
 
 ---
 
+## 2026-04-03 — TypeScript `include` does not limit the dependency graph
+Project: lift-mobility-core | Stack: Vite + React + TypeScript | Time lost: ~1 h
+
+Problem: Attempted to scope CI `tsc` with a short `include` list while retaining `App.tsx` as a root. Errors remained ~500 — finance, operator, legacy enterprise modules were still type-checked.
+
+Root cause: **`include`** selects entry roots only; the compiler always follows **imports**. `exclude` does not remove imported modules.
+
+Fix: Separate **`tsconfig.ci.json`** with roots that **omit** the monolithic shell when it imports broken subtrees; or fix all consumers. Document TODO to revert to full program after cleanup.
+
+Never do: Promise "scoped `include`" as equivalent to scoped type safety without verifying the import graph.
+
+Pattern promoted: yes — **dual tsconfig** (CI slice vs full app) as an explicit debt marker.
+
+---
+
 ## 2026-03-22 — Google OAuth session lost after redirect
 Project: lift-staff-portal | Stack: Supabase + React + React Router | Time lost: 3 hours
 

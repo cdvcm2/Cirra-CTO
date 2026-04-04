@@ -1,5 +1,6 @@
-# PATTERNS.md
-Cirra Edge — Universal Engineering Patterns
+# PATTERNS.md — Cirra Edge — Universal Engineering Patterns
+
+*Stamp **2026-04-03:** No pattern changes — lift-mobility-core documents **tsconfig.ci** / **tsconfig.app** split in `QA_DOCTRINE.md`.*
 
 ## [Supabase + React] Google OAuth — Implicit Flow
 Stack: Supabase Auth + React + React Router

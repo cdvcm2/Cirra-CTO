@@ -2,6 +2,8 @@
 Cirra Edge — Curated Prompt Library
 Version 2.0 | March 2026
 
+*Cross-reference: **LIFT Mobility Core** handover **2026-04-03** — `../HANDOVER.md` in that repo (Dexterity demo week; scoped CI `tsc`).*
+
 ---
 
 ## 01 — CTO Activation

@@ -2,6 +2,8 @@
 Version 2.0 | Cirra Edge | March 2026
 Universal — applies to every project, every stack, every company under Cirra Edge.
 
+*Operational note **2026-04-03:** Dual TypeScript configs (CI slice vs full app) are an acceptable **temporary** debt marker when the merge gate must stay green; document revert criteria in the repo’s `ci.yml` / ADR.*
+
 ## How to Use This File
 - New project: add as submodule → copy projects/_template/ → fill brackets → commit
 - Existing project audit: upload to Claude Chat + paste audit brief from PROMPTS.md

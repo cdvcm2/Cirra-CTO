@@ -2,6 +2,8 @@
 Cirra Edge — Architecture and Stack Decision Log
 Append-only. Add an entry whenever a significant architecture decision is made.
 
+*Stamp **2026-04-03:** No new stack rows — LIFT scoped-CI decision lives in **lift-mobility-core** `docs/DECISIONS_LOG.md`.*
+
 ---
 
 ## Authentication

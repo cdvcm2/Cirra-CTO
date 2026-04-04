@@ -1,5 +1,5 @@
 # NEVER-2-FAR — CLAUDE.md
-Last updated: March 2026
+Last updated: March 2026 · Playbook sweep **2026-04-03** (template text unchanged — see **lift-mobility-core** `HANDOVER.md` for sibling repo status).
 
 ---
 
