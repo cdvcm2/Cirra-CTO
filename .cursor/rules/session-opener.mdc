@@ -1,0 +1,52 @@
+---
+description: Session opener — fires on every Cursor task
+alwaysApply: true
+---
+
+# SESSION OPENER — CIRRA STANDARD
+# Copy this file to .cursor/rules/session-opener.mdc in every project
+# Fill all [PROJECT-SPECIFIC] sections before use
+
+## MANDATORY PRE-TASK READS
+Before doing anything else, read these files in full:
+- CLAUDE.md
+- HANDOVER.md
+- [PROJECT-SPECIFIC: e.g. ENGINEERING_DOCTRINE.md or THE_CIRRA_WAY.md]
+- [PROJECT-SPECIFIC: e.g. LIFT_SHARED.md or PATTERNS.md]
+
+## PROJECT IDENTITY
+Supabase project ref: [PROJECT-SPECIFIC: e.g. msiyudmaidguzjuemcru]
+Single Supabase client path: [PROJECT-SPECIFIC: e.g. src/lib/supabase.ts]
+AuthProvider path: [PROJECT-SPECIFIC: e.g. src/contexts/AuthContext.tsx]
+
+## ENFORCED RULES — NO EXCEPTIONS
+- One Supabase client only. Never instantiate a second.
+- One AuthProvider only. Never nest or duplicate.
+- No service role key in src/ ever.
+- No naked any types.
+- RLS is always on. Never bypass with service role in frontend.
+- Every brief must produce a SUMMARY block before closing.
+- Output format: SUMMARY / TASK / FILES CREATED / FILES MODIFIED /
+  FILES DELETED / CHECKS RUN / SCHEMA CHANGES / MIGRATION APPLIED /
+  COMMITTED / PUSHED / MERGE CONFLICTS / BUILD STATUS / OPEN ISSUES
+
+## AGENT PROTOCOL
+You are Agent 1 (Builder) unless explicitly told you are Agent 2.
+Agent 1: Read files. Build. Commit. Push. Post SUMMARY block.
+Agent 2: Starts immediately when Agent 1 posts SUMMARY block.
+
+--- REV 3 ENFORCEMENT (April 2026) ---
+
+Before accepting any brief from the user:
+
+1. DECISION BLOCK CHECK: Does the brief include all 10 fields of the Pre-Brief Decision Block (Problem, Root cause/hypothesis, Severity, Files affected, Do NOT touch, Test/evidence required, Rollback plan, Definition of success, Known unknowns, Why now)? If any field is missing, respond: REJECTED — Pre-Brief Decision Block incomplete. List the missing fields. Do not proceed.
+
+2. SEVERITY CHECK: Is a severity level (P0/P1/P2/P3) stated? If not, ask for classification before proceeding.
+
+3. UNVERIFIED BRIEF CHECK: Are there any briefs from this session where output was not received or verified? If yes, respond: BLOCKED — unverified briefs exist from this session. List them. All must be verified before accepting new briefs.
+
+4. POST-BRIEF RULE: After completing any brief, state: QA AGENT REQUIRED — paste the QA trigger line into Agent 2 before proceeding to the next brief.
+
+5. SESSION END RULE: When the user signals session end or after 40 exchanges, prompt: SESSION END PROTOCOL — HANDOVER.md update required. Run the Document Agent to update HANDOVER.md and CLAUDE.md before closing.
+
+6. TECH DEBT TRIGGER: If any file you modify is over 500 lines, flag it: TECH DEBT TRIGGER — [filename] is [N] lines. Decomposition required before next feature in this file. Per THE_CIRRA_WAY Section 05.
