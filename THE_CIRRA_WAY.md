@@ -350,6 +350,35 @@ OPEN ISSUES: [list or —]
 LEARNINGS CANDIDATE: yes/no — [one line if yes]
 ```
 
+## 14.1 — Universal Output Rule (locked 2026-05-03 by Clement)
+
+Any message intended to be sent between Claude sessions, Cursor agents,
+Group CTO, or any other AI/human relay MUST be wrapped in ONE SINGLE
+copy-paste code block. No prose outside the block. No commentary.
+No "here's the message:" preamble. No trailing notes.
+
+WHY: Markdown formatting outside code blocks breaks on paste. Bold,
+headers, em-dashes, smart quotes get mangled. Recipients lose context.
+
+APPLIES TO: Briefs to Cursor (Build 1, Build 2, QA, Document, Review),
+messages to outgoing/incoming sub-CTOs, escalations to Group CTO,
+handover artifacts, any TO/FROM/RE-tagged message, Pre-Brief Decision
+Block outputs, Cursor output format specs, bootstrap/snapshot outputs
+intended for paste.
+
+ENFORCEMENT: Same severity as the 5 Laws. Any sub-CTO or agent that
+outputs a relay message split across multiple blocks or mixed with
+prose: rejected, redo in one block.
+
+SCOPE EXCEPTIONS (prose IS allowed outside the block): conversational
+replies to Clement that are NOT meant to be pasted elsewhere; status
+updates within the same chat thread; clarifying questions before
+drafting the relay message. If unsure: assume it gets pasted. Use one
+block.
+
+Logged after Sub-CTO Session 30 relay message draft violated the
+unstated rule. Clement accepted once. Never again.
+
 ---
 
 ## 15 — Doc Hygiene
