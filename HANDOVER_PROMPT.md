@@ -1,10 +1,11 @@
 # HANDOVER_PROMPT.md — The `/handover` Trigger
 
-**Cirra Edge | Version 1.1 | April 2026**
+**Cirra Edge | Version 1.2 | May 2026**
 **Lives in:** `cirra-cto/HANDOVER_PROMPT.md` AND every Cirra sub-CTO Claude project's knowledge base
 **Triggers on:** Clement typing `/handover` in any sub-CTO chat OR sub-CTO self-detecting context limit
 **Output:** 8 mandatory artifacts, ONE git commit command, ONE kickoff message
 
+**v1.2 changes:** Step 1.5 inline SESSION_DECISIONS / SESSION_TECH_DEBT logging (`LIFT-PHASE-0-FIX-4`); pointer to HANDOVER_TEMPLATE + handover-validate gate for docs-close commits.
 **v1.1 changes:** Added mandatory Self-Initiated Handover Protocol so sub-CTO triggers `/handover` proactively before context exhaustion, not after.
 
 ---
@@ -42,7 +43,29 @@ block.
 Logged after Sub-CTO Session 30 relay message draft violated the
 unstated rule. Clement accepted once. Never again.
 
+**Machine scaffold (FIX-4):** Dated `docs/handover/HANDOVER_<YYYY-MM-DD>.md` files follow **`cirra-playbook/HANDOVER_TEMPLATE.md`** markers; `docs(LIFT-DOCS-CLOSE-NN)` commits are gated by **`scripts/handover-validate.sh`**. Locked decisions must be appended same-session via Step 1.5 scripts — never only at `/handover` time.
+
 **`/handover` system provenance:** **CLAUDE.md** historical arc — Session 27 (~25 Apr 2026) shipped `/handover` (`scripts/handover-snapshot.sh` + this prompt). Git: **`cb2f05e`** — `/handover` system (snapshot script + doctrine); **`ec288f2`** — HANDOVER_PROMPT v1.1 (self-initiated handover protocol with 3 triggers).
+
+---
+
+## Step 1.5 — Inline decision logging (mandatory, LIFT-PHASE-0-FIX-4)
+
+Whenever a decision **locks** during the session, the sub-CTO **MUST** run **immediately** (same severity as §14.1 — not at session end):
+
+```bash
+bash scripts/decisions-log-append.sh D-NN-NN "Short title" "One-line rationale"
+```
+
+When surfacing reproducible tech-debt during the session:
+
+```bash
+bash scripts/tech-debt-log-append.sh TD-NN-NN "Short title" "Repro / evidence line"
+```
+
+**Trigger discipline:** if you write *\"I'm locking D-… as…\"*, the **next action** must be the matching append script output (not a defer to `/handover`). `scripts/handover-snapshot.sh` **§29** compares commit volume vs same-day SESSION_DECISIONS / SESSION_TECH_DEBT line counts — a sparse log with many commits is a **hollow handover risk**; correct before `/handover` fires.
+
+Handover drafts must follow **`cirra-playbook/HANDOVER_TEMPLATE.md`** markers; `scripts/handover-validate.sh` gates **`docs(LIFT-DOCS-CLOSE-NN)`** commits once the markdown handover artifact is staged.
 
 ---
 
@@ -407,6 +430,8 @@ Do NOT fabricate to fill artifact slots. Empty + flagged > false + "complete."
 
 ## CHANGELOG
 
+**v1.2 (May 2026):**
+- Step 1.5 mandatory inline SESSION_DECISIONS / SESSION_TECH_DEBT append scripts; HANDOVER_TEMPLATE + `handover-validate` pointer for docs-close commits.
 **v1.1 (April 2026):**
 - Added Self-Initiated Handover Protocol section with 3 mandatory triggers
 - Locked warning block format
@@ -417,5 +442,5 @@ Do NOT fabricate to fill artifact slots. Empty + flagged > false + "complete."
 
 ---
 
-*HANDOVER_PROMPT.md | Version 1.1 | Cirra Edge | April 2026*
+*HANDOVER_PROMPT.md | Version 1.2 | Cirra Edge | May 2026*
 *Locked: any change requires Group CTO sign-off + version bump.*

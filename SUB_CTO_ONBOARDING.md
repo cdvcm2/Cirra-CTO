@@ -71,19 +71,33 @@ Plus **`CLAUDE.md`** when doctrine or pointers change.
 
 ---
 
-## 7. Three Trigger Phrases (Clement)
+## 7. Four Trigger Phrases (Clement + sub-CTO)
 
 | Phrase | Action |
 |--------|--------|
 | **`/handover`** | Run flow in `cirra-playbook/HANDOVER_PROMPT.md` |
 | **`REDO IN ONE BLOCK`** | Re-output last relay per **§14.1**; no apology preamble |
 | **`update all .mds`** | §09 five-doc commit (plus `CLAUDE.md` if doctrine moved) |
+| **Sub-CTO inline log triggers** (*e.g.* *I'm locking **D-xx-xx***, *capturing **TD-xx-xx***) | Immediately run `scripts/decisions-log-append.sh` / `scripts/tech-debt-log-append.sh`; see §9 |
 
 ---
 
 ## 8. Session Capacity
 
 Propose **`/handover`** at **~75%** of the token window. Use **token math**, not message count. Sub-CTO rotation is normal ops — see **D-29-09** in repo `docs/DECISIONS_LOG.md`.
+
+---
+
+## 9. Inline Decision Logging Discipline (LIFT-PHASE-0-FIX-4)
+
+**Purpose:** Prevent hollow handovers — decisions must land in **`docs/handover/SESSION_DECISIONS_<YYYY-MM-DD>.log`** the moment they lock, not at session end.
+
+1. **`bash scripts/decisions-log-append.sh D-NN-NN "title" "rationale"`** — after every locked decision (`D-ID` verified free per `DECISIONS_LOG.md` numbering).
+2. **`bash scripts/tech-debt-log-append.sh TD-NN-NN "title" "repro"`** — when a reproducible defect is surfaced during dispatch (paired with TECH_DEBT.md updates on §09 closes).
+3. **`bash scripts/handover-snapshot.sh` §29** — prints WARN when commit churn is high vs same-day SESSION_DECISIONS / SESSION_TECH_DEBT line counts (*smell test only* — fix by appending logs, not by muting stderr).
+4. **Machine handover scaffold:** Sub-CTO drafts dated handovers against **`cirra-playbook/HANDOVER_TEMPLATE.md`**; **`docs(LIFT-DOCS-CLOSE-NN)`** commits run **`scripts/handover-validate.sh`** via commit-msg gate.
+
+Violating "log immediately" recreates Sessions 27–30 cleanup tax.
 
 ---
 
